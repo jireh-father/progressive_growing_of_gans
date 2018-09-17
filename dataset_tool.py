@@ -69,7 +69,7 @@ class TFRecordExporter:
             self.resolution_log2 = int(np.log2(self.shape[1]))
             assert self.shape[0] in [1, 3]
             assert self.shape[1] == self.shape[2]
-            # assert self.shape[1] ==  2 ** self.resolution_log2
+            assert self.shape[1] == 2 ** self.resolution_log2
             tfr_opt = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.NONE)
             for lod in range(self.resolution_log2 - 1):
                 tfr_file = self.tfr_prefix + '-r%02d.tfrecords' % (self.resolution_log2 - lod)
@@ -461,6 +461,7 @@ def create_cafe24cloth(tfrecord_dir, cafe24_dir):
         order = tfr.choose_shuffled_order()
         for idx in range(order.size):
             img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
+            img = img.resize((128, 128))
             # assert img.shape == (218, 178, 3)
             # img = img[cy - 64: cy + 64, cx - 64: cx + 64]
             img = img.transpose(2, 0, 1)  # HWC => CHW
