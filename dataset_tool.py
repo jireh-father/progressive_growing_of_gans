@@ -460,8 +460,8 @@ def create_cafe24cloth(tfrecord_dir, cafe24_dir):
     with TFRecordExporter(tfrecord_dir, len(image_filenames)) as tfr:
         order = tfr.choose_shuffled_order()
         for idx in range(order.size):
-            img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
-            img = img.resize((128, 128))
+            img = np.asarray(PIL.Image.open(image_filenames[order[idx]]).resize((128, 128)))
+            # img = img.resize((128, 128))
             # assert img.shape == (218, 178, 3)
             # img = img[cy - 64: cy + 64, cx - 64: cx + 64]
             img = img.transpose(2, 0, 1)  # HWC => CHW
