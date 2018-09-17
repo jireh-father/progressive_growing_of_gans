@@ -754,6 +754,11 @@ def execute_cmdline(argv):
     p.add_argument('--resolution', help='Output resolution (default: 256)', type=int, default=256)
     p.add_argument('--max_images', help='Maximum number of images (default: none)', type=int, default=None)
 
+    p = add_command('create_cafe24cloth', 'Create dataset for CelebA.',
+                    'create_celeba datasets/celeba ~/downloads/celeba')
+    p.add_argument('tfrecord_dir', help='New dataset directory to be created')
+    p.add_argument('cafe24cloth_dir', help='Directory containing CelebA')
+
     p = add_command('create_celeba', 'Create dataset for CelebA.',
                     'create_celeba datasets/celeba ~/downloads/celeba')
     p.add_argument('tfrecord_dir', help='New dataset directory to be created')
