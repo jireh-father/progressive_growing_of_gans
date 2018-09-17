@@ -759,6 +759,8 @@ def execute_cmdline(argv):
                     'create_celeba datasets/celeba ~/downloads/celeba')
     p.add_argument('tfrecord_dir', help='New dataset directory to be created')
     p.add_argument('cafe24_dir', help='Directory containing CelebA')
+    p.add_argument('--cx', help='Center X coordinate (default: 89)', type=int, default=89)
+    p.add_argument('--cy', help='Center Y coordinate (default: 121)', type=int, default=121)
 
     p = add_command('create_celeba', 'Create dataset for CelebA.',
                     'create_celeba datasets/celeba ~/downloads/celeba')
