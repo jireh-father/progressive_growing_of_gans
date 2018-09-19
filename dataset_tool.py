@@ -451,7 +451,7 @@ def create_lsun(tfrecord_dir, lmdb_dir, resolution=256, max_images=None):
 
 def create_cafe24cloth(tfrecord_dir, cafe24_dir, cx=89, cy=121):
     print('Loading cafe24cloth from "%s"' % cafe24_dir)
-    glob_pattern = os.path.join(cafe24_dir, 'shirt_thumb', '*.jpg')
+    glob_pattern = os.path.join(cafe24_dir, 'shirt', '*.jpg')
     image_filenames = sorted(glob.glob(glob_pattern))
     expected_images = 10758
     if len(image_filenames) != expected_images:
