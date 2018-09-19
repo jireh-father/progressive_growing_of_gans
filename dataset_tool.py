@@ -14,7 +14,7 @@ import six.moves.queue as Queue
 import traceback
 import numpy as np
 import tensorflow as tf
-import PIL.Image
+from PIL import Image
 
 import tfutil
 import dataset
@@ -460,7 +460,18 @@ def create_cafe24cloth(tfrecord_dir, cafe24_dir, cx=89, cy=121):
     with TFRecordExporter(tfrecord_dir, len(image_filenames)) as tfr:
         order = tfr.choose_shuffled_order()
         for idx in range(order.size):
-            img = np.asarray(PIL.Image.open(image_filenames[order[idx]]).resize((512, 512)))
+            im = Image.open(image_filenames[order[idx]])
+            old_size = im.size  # old_size[0] is in (width, height) format
+            desired_size = 512
+            ratio = float(desired_size) / max(old_size)
+            new_size = tuple([int(x * ratio) for x in old_size])
+            im = im.resize(new_size, Image.ANTIALIAS)
+            # create a new image and paste the resized on it
+
+            new_im = Image.new("RGB", (desired_size, desired_size), "white")
+            new_im.paste(im, ((desired_size - new_size[0]) // 2,
+                              (desired_size - new_size[1]) // 2))
+            img = np.asarray(new_im)
             # img = img.resize((128, 128))
             # assert img.shape == (218, 178, 3)
             # img = img[cy - 64: cy + 64, cx - 64: cx + 64]
