@@ -449,20 +449,30 @@ def create_lsun(tfrecord_dir, lmdb_dir, resolution=256, max_images=None):
 
 # ----------------------------------------------------------------------------
 
-def create_cafe24cloth(tfrecord_dir, cafe24_dir, cx=89, cy=121):
+def create_cafe24cloth(tfrecord_dir, cafe24_dir, cloth_category="shirt", image_size=512):
     print('Loading cafe24cloth from "%s"' % cafe24_dir)
-    glob_pattern = os.path.join(cafe24_dir, 'shirt', '*.jpg')
+    assert image_size == 2 ** int(np.log2(image_size))
+    assert image_size >= 64
+    assert os.path.isdir(os.path.join(cafe24_dir, cloth_category))
+    assert cloth_category
+    thumb_list = glob.glob(os.path.join(cafe24_dir, cloth_category, '*thumb.jpg'))
+    if len(thumb_list) > 0:
+        thumb_path = os.path.join(cafe24_dir, cloth_category + "_thumb")
+        if not os.path.isdir(thumb_path):
+            os.makedirs(thumb_path)
+        for thumb_file in thumb_list:
+            os.rename(thumb_file, os.path.join(thumb_path, os.path.basename(thumb_file)))
+
+    glob_pattern = os.path.join(cafe24_dir, cloth_category, '*.jpg')
     image_filenames = sorted(glob.glob(glob_pattern))
-    expected_images = 10758
-    if len(image_filenames) != expected_images:
-        error('Expected to find %d images' % expected_images)
+    assert len(image_filenames) > 0
 
     with TFRecordExporter(tfrecord_dir, len(image_filenames)) as tfr:
         order = tfr.choose_shuffled_order()
         for idx in range(order.size):
             im = Image.open(image_filenames[order[idx]])
             old_size = im.size  # old_size[0] is in (width, height) format
-            desired_size = 512
+            desired_size = image_size
             ratio = float(desired_size) / max(old_size)
             new_size = tuple([int(x * ratio) for x in old_size])
             im = im.resize(new_size, Image.ANTIALIAS)
