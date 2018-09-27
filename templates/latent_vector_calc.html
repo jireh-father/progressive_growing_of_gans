@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/card.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/button.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/checkbox.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/input.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/form.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/dropdown.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/menu.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/label.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/modal.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/icon.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/dimmer.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/transition.min.css')}}">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="{{url_for('static', filename='Semantic-UI-CSS-master/components/dropdown.min.js')}}"></script>
+    <script src="{{url_for('static', filename='Semantic-UI-CSS-master/components/modal.min.js')}}"></script>
+    <script src="{{url_for('static', filename='Semantic-UI-CSS-master/components/dimmer.min.js')}}"></script>
+    <script src="{{url_for('static', filename='Semantic-UI-CSS-master/components/transition.min.js')}}"></script>
+</head>
+<body>
+<form method="get" action="/calc">
+    <!--first latent vector -->
+    <div style="height:800px; display:inline-block;">
+        <input type="submit" value="Generate!!"/>
+        <input type="submit" value="Random!!" onclick="$('#first_is_random').val('1');"/>
+        <div style="height:800px; overflow: scroll;display:inline-block;">
+
+            <input type="hidden" id="first_is_random" name="first_is_random" value="0"/>
+
+            <div id="first_latent_range">
+                {% for i in range(latent_cnt) %}
+                <div>
+                    <input class="autoupdate" type="range" id="first_latent_{{i}}" name="first_latent_{{i}}"
+                           min="{{min}}"
+                           max="{{max}}"
+                           step="{{step}}"
+                           value="{{first_latent[i]}}"/>{{i}}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div style="display:inline-block;">
+        <h1>first</h1>
+        <img width="{{img_size}}" height="{{img_size}}"
+             src="{{url_for('static', filename='generated')}}/{{first_file_name}}"/>
+    </div>
+
+    <!-- operation -->
+    <div style="display:inline-block;">
+        <input type="submit" value="Operate!!"/>
+        operation <input type="text" name="operation" value="{{operation}}" placeholder="+ or -"/>
+    </div>
+
+    <!--second latent vector-->
+    <div style="height:800px; display:inline-block;">
+        <input type="submit" value="Generate!!"/>
+        <input type="submit" value="Random!!" onclick="$('#second_is_random').val('1');"/>
+        <div style="height:800px; overflow: scroll;display:inline-block;">
+
+            <input type="hidden" id="second_is_random" name="second_is_random" value="0"/>
+
+            <div id="second_latent_range">
+                {% for i in range(latent_cnt) %}
+                <div>
+                    <input class="autoupdate" type="range" id="second_latent_{{i}}" name="second_latent_{{i}}"
+                           min="{{min}}"
+                           max="{{max}}"
+                           step="{{step}}"
+                           value="{{second_latent[i]}}"/>{{i}}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div style="display:inline-block;">
+        <h1>second</h1>
+        <img width="{{img_size}}" height="{{img_size}}"
+             src="{{url_for('static', filename='generated')}}/{{second_file_name}}"/>
+    </div>
+
+
+    <!--result-->
+    <div style="display:inline-block;">
+        <h1>result</h1>
+        <img width="{{img_size}}" height="{{img_size}}"
+             src="{{url_for('static', filename='generated')}}/{{result_file_name}}"/>
+    </div>
+</form>
+</body>
+</html>
