@@ -12,8 +12,8 @@ app = Flask(__name__)
 
 snapshot = 5409
 snapshot = None
-run_id = 2
-latent_cnt = 512
+run_id = 1
+latent_cnt = 1024
 img_size = 512
 step = 0.1
 min = -5.0
@@ -28,6 +28,8 @@ print('Running %s()...' % config.train['func'])
 network_pkl = misc.locate_network_pkl(run_id)
 print('Loading network from "%s"...' % network_pkl)
 G, D, Gs = misc.load_network_pkl(run_id, snapshot)
+if not os.path.isdir("static/generated"):
+    os.makedirs("static/generated")
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -51,3 +53,5 @@ def main_page():
     # max = latent.max()
     return render_template("main.html", file_name=file_name, min=min, max=max, latent=list(latent),
                            step=step, latent_cnt=latent_cnt, img_size=img_size)
+
+
