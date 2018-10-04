@@ -506,6 +506,7 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512):
     image_filenames = []
     labels = []
     for label_idx, d in enumerate(dirs):
+        print("checking dir %s " % d)
         thumb_list = glob.glob(os.path.join(d, '*thumb.jpg'))
         if len(thumb_list) > 0:
             thumb_path = d + "_thumb"
@@ -516,6 +517,7 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512):
 
         glob_pattern = os.path.join(d, '*.jpg')
         tmp_image_filenames = sorted(glob.glob(glob_pattern))
+
         assert len(tmp_image_filenames) > 0
         image_filenames += tmp_image_filenames
         labels += ([label_idx] * len(tmp_image_filenames))
