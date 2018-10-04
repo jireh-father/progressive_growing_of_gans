@@ -492,7 +492,7 @@ def create_cafe24cloth(tfrecord_dir, cafe24_dir, cloth_category="shirt", image_s
 # ----------------------------------------------------------------------------
 
 def create_cloths(tfrecord_dir, cloth_dir, image_size=512):
-    print('Loading cafe24cloth from "%s"' % cloth_dir)
+    print('Loading cloths from "%s"' % cloth_dir)
     assert image_size == 2 ** int(np.log2(image_size))
     assert image_size >= 64
     assert os.path.isdir(cloth_dir)
@@ -836,6 +836,12 @@ def execute_cmdline(argv):
     p.add_argument('tfrecord_dir', help='New dataset directory to be created')
     p.add_argument('cafe24_dir', help='Directory containing CelebA')
     p.add_argument('--cloth_category', help='cloth category (default: shirt)', type=str, default="shirt")
+    p.add_argument('--image_size', help='image size (default: 512)', type=int, default=512)
+
+    p = add_command('create_cloths', 'Create dataset for CelebA.',
+                    'create_celeba datasets/celeba ~/downloads/celeba')
+    p.add_argument('tfrecord_dir', help='New dataset directory to be created')
+    p.add_argument('cloth_dir', help='Directory containing cloth')
     p.add_argument('--image_size', help='image size (default: 512)', type=int, default=512)
 
     p = add_command('create_celeba', 'Create dataset for CelebA.',
