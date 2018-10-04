@@ -499,7 +499,7 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512):
     tmp_dirs = glob.glob(os.path.join(cloth_dir, '*'))
     dirs = []
     for d in tmp_dirs:
-        if d.endswith("_edge") or d.endswith("_thumb"):
+        if d.endswith("_edge") or d.endswith("_thumb") or not os.path.isdir(d):
             continue
         dirs.append(d)
     label_size = len(dirs)
