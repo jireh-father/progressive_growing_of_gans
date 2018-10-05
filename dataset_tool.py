@@ -491,7 +491,7 @@ def create_cafe24cloth(tfrecord_dir, cafe24_dir, cloth_category="shirt", image_s
 
 # ----------------------------------------------------------------------------
 
-def create_cloths(tfrecord_dir, cloth_dir, image_size=512):
+def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True):
     print('Loading cloths from "%s"' % cloth_dir)
     assert image_size == 2 ** int(np.log2(image_size))
     assert image_size >= 64
@@ -502,7 +502,6 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512):
         if d.endswith("_edge") or d.endswith("_thumb") or not os.path.isdir(d):
             continue
         dirs.append(d)
-    label_size = len(dirs)
     image_filenames = []
     labels = []
     for label_idx, d in enumerate(dirs):
@@ -543,7 +542,12 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512):
             img = img.transpose(2, 0, 1)  # HWC => CHW
             tfr.add_image(img)
         labels = np.array(labels)
-        tfr.add_labels(labels[order])
+        if onehot_label:
+            onehot = np.zeros((len(labels), label_idx + 1), dtype=np.float32)
+            onehot[np.arange(len(labels)), labels] = 1.0
+            tfr.add_labels(onehot[order])
+        else:
+            tfr.add_labels(labels[order])
 
 
 # ----------------------------------------------------------------------------
@@ -845,6 +849,7 @@ def execute_cmdline(argv):
     p.add_argument('tfrecord_dir', help='New dataset directory to be created')
     p.add_argument('cloth_dir', help='Directory containing cloth')
     p.add_argument('--image_size', help='image size (default: 512)', type=int, default=512)
+    p.add_argument('--onehot_label', help='onehot label (default: True)', type=bool, default=True)
 
     p = add_command('create_celeba', 'Create dataset for CelebA.',
                     'create_celeba datasets/celeba ~/downloads/celeba')
