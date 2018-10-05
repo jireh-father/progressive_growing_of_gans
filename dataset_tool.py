@@ -542,7 +542,7 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512):
             # img = img[cy - 64: cy + 64, cx - 64: cx + 64]
             img = img.transpose(2, 0, 1)  # HWC => CHW
             tfr.add_image(img)
-
+        labels = np.array(labels)
         tfr.add_labels(labels[order])
 
 
