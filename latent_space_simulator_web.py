@@ -12,8 +12,8 @@ app = Flask(__name__)
 
 snapshot = 5409
 snapshot = None
-run_id = 2
-latent_cnt = 512
+run_id = 106
+latent_cnt = 64
 img_size = 512
 step = 0.1
 min = -5.0

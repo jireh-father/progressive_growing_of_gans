@@ -131,7 +131,6 @@ def set_vars(var_to_value_dict):
                                        name='setter')  # create new setter
         ops.append(setter)
         feed_dict[setter.op.inputs[1]] = value
-    print(ops, feed_dict)
     run(ops, feed_dict)
 
 
