@@ -12,9 +12,10 @@ app = Flask(__name__)
 
 snapshot = 5409
 snapshot = None
-run_id = 106
-latent_cnt = 64
+run_id = 3
+latent_cnt = 512
 img_size = 512
+label_cnt = 33
 step = 0.1
 min = -5.0
 max = 5.0
@@ -98,3 +99,32 @@ def latent_vector_calc():
                            second_file_name=second_file_name, result_file_name=result_file_name,
                            min=min, max=max, first_latent=list(first_latent), second_latent=list(second_latent),
                            step=step, latent_cnt=latent_cnt, img_size=img_size, operation=operation)
+
+
+@app.route("/cgan", methods=['GET', 'POST'])
+def cgan():
+    file_name = "%s.png" % uuid.uuid4()
+    path = os.path.join(os.path.dirname(__file__), "static/generated", file_name)
+
+    if 'is_random' not in request.args or request.args["is_random"] == "1":
+        np.random.seed(int(time.time()))
+        latents = np.random.randn(1, latent_cnt).astype(np.float32)
+    else:
+        latent_list = []
+        for i in range(latent_cnt):
+            latent_list.append(float(request.args['latent_%d' % i]))
+        latents = np.array([latent_list]).astype(np.float32)
+
+    labels = np.zeros([1, label_cnt])
+    if 'condition' not in request.args:
+        condition = np.random.randint(label_cnt)
+    else:
+        condition = int(request.args['condition'])
+    labels[0][condition] = 1.
+    print(labels)
+    util_scripts.generate_fake_images(run_id, path=path, latent=latents, Gs=Gs, labels=labels, minibatch_size=1)
+    latent = latents[0].round(1)
+    # min = latent.min()
+    # max = latent.max()
+    return render_template("cgan.html", file_name=file_name, min=min, max=max, latent=list(latent),
+                           step=step, latent_cnt=latent_cnt, img_size=img_size, condition=condition)

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/card.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/button.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/checkbox.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/input.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/form.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/dropdown.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/menu.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/label.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/modal.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/icon.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/dimmer.min.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{url_for('static', filename='Semantic-UI-CSS-master/components/transition.min.css')}}">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="{{url_for('static', filename='Semantic-UI-CSS-master/components/dropdown.min.js')}}"></script>
+    <script src="{{url_for('static', filename='Semantic-UI-CSS-master/components/modal.min.js')}}"></script>
+    <script src="{{url_for('static', filename='Semantic-UI-CSS-master/components/dimmer.min.js')}}"></script>
+    <script src="{{url_for('static', filename='Semantic-UI-CSS-master/components/transition.min.js')}}"></script>
+</head>
+<body>
+<form method="get" action="/cgan" style="height:800px; display:inline-block;">
+    <input type="submit" value="Generate!!"/>
+    <input type="submit" value="Random!!" onclick="$('#is_random').val('1');"/>
+    <div style="height:800px; overflow: scroll;display:inline-block;">
+
+        <input type="hidden" id="is_random" name="is_random" value="0"/>
+        <input type="input" id="condition" name="condition" value="{{condition}}"/>
+        <div id="latent_range">
+            {% for i in range(latent_cnt) %}
+            <div>
+                <input class="autoupdate" type="range" id="latent_{{i}}" name="latent_{{i}}" min="{{min}}" max="{{max}}"
+                       step="{{step}}"
+                       value="{{latent[i]}}"/>{{i}}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</form>
+
+<div style="display:inline-block;">
+    <img width="{{img_size}}" height="{{img_size}}"
+         src="{{url_for('static', filename='generated')}}/{{file_name}}"/>
+</div>
+
+</body>
+</html>

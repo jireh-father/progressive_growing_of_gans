@@ -491,7 +491,7 @@ def create_cafe24cloth(tfrecord_dir, cafe24_dir, cloth_category="shirt", image_s
 
 # ----------------------------------------------------------------------------
 
-def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True):
+def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True, one_hot_count=1):
     print('Loading cloths from "%s"' % cloth_dir)
     assert image_size == 2 ** int(np.log2(image_size))
     assert image_size >= 64
@@ -504,6 +504,7 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True):
         dirs.append(d)
     image_filenames = []
     labels = []
+    dirs.sort()
     for label_idx, d in enumerate(dirs):
         print("checking dir %s " % d)
         thumb_list = glob.glob(os.path.join(d, '*thumb.jpg'))
@@ -519,7 +520,10 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True):
 
         assert len(tmp_image_filenames) > 0
         image_filenames += tmp_image_filenames
-        labels += ([label_idx] * len(tmp_image_filenames))
+        if onehot_label:
+            labels += ([label_idx] * (len(tmp_image_filenames) * one_hot_count))
+        else:
+            labels.append(label_idx)
 
     with TFRecordExporter(tfrecord_dir, len(image_filenames)) as tfr:
         order = tfr.choose_shuffled_order()
@@ -543,8 +547,11 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True):
             tfr.add_image(img)
         labels = np.array(labels)
         if onehot_label:
-            onehot = np.zeros((len(labels), label_idx + 1), dtype=np.float32)
-            onehot[np.arange(len(labels)), labels] = 1.0
+            onehot = np.zeros((len(labels), (label_idx + 1) * one_hot_count), dtype=np.float32)
+            onehot[np.arange(len(labels)), labels * one_hot_count] = 1.0
+            if one_hot_count > 1:
+                for i in range(1, one_hot_count):
+                    onehot[np.arange(len(labels)), labels * one_hot_count + i] = 1.0
             tfr.add_labels(onehot[order])
         else:
             tfr.add_labels(labels[order])
@@ -850,6 +857,7 @@ def execute_cmdline(argv):
     p.add_argument('cloth_dir', help='Directory containing cloth')
     p.add_argument('--image_size', help='image size (default: 512)', type=int, default=512)
     p.add_argument('--onehot_label', help='onehot label (default: True)', type=bool, default=True)
+    p.add_argument('--onehot_count', help='onehot count (default: 1)', type=int, default=1)
 
     p = add_command('create_celeba', 'Create dataset for CelebA.',
                     'create_celeba datasets/celeba ~/downloads/celeba')

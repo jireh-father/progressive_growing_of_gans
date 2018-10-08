@@ -27,10 +27,11 @@ import dataset
 # To run, uncomment the appropriate line in config.py and launch train.py.
 
 def generate_fake_images(run_id=None, snapshot=None, grid_size=[1, 1], num_pngs=1, image_shrink=1, png_prefix=None,
-                         random_seed=1000, minibatch_size=8, path=None, latent=None, Gs=None):
+                         random_seed=1000, minibatch_size=8, path=None, latent=None, Gs=None, labels=None):
     if path and latent is not None and Gs is not None:
         # latents = misc.random_latents(np.prod([1, 1]), Gs, random_state=random_state)
-        labels = np.zeros([latent.shape[0], 0], np.float32)
+        if labels is None:
+            labels = np.zeros([latent.shape[0], 0], np.float32)
         images = Gs.run(latent, labels, minibatch_size=minibatch_size, num_gpus=config.num_gpus, out_mul=127.5,
                         out_add=127.5, out_shrink=image_shrink, out_dtype=np.uint8)
         misc.save_image_grid(images, os.path.join(path), [0, 255], [1, 1])
