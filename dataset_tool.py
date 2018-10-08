@@ -491,7 +491,7 @@ def create_cafe24cloth(tfrecord_dir, cafe24_dir, cloth_category="shirt", image_s
 
 # ----------------------------------------------------------------------------
 
-def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True, one_hot_count=1):
+def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True, onehot_count=1):
     print('Loading cloths from "%s"' % cloth_dir)
     assert image_size == 2 ** int(np.log2(image_size))
     assert image_size >= 64
@@ -521,7 +521,7 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True, on
         assert len(tmp_image_filenames) > 0
         image_filenames += tmp_image_filenames
         if onehot_label:
-            labels += ([label_idx] * (len(tmp_image_filenames) * one_hot_count))
+            labels += ([label_idx] * (len(tmp_image_filenames) * onehot_count))
         else:
             labels.append(label_idx)
 
@@ -547,11 +547,11 @@ def create_cloths(tfrecord_dir, cloth_dir, image_size=512, onehot_label=True, on
             tfr.add_image(img)
         labels = np.array(labels)
         if onehot_label:
-            onehot = np.zeros((len(labels), (label_idx + 1) * one_hot_count), dtype=np.float32)
-            onehot[np.arange(len(labels)), labels * one_hot_count] = 1.0
-            if one_hot_count > 1:
-                for i in range(1, one_hot_count):
-                    onehot[np.arange(len(labels)), labels * one_hot_count + i] = 1.0
+            onehot = np.zeros((len(labels), (label_idx + 1) * onehot_count), dtype=np.float32)
+            onehot[np.arange(len(labels)), labels * onehot_count] = 1.0
+            if onehot_count > 1:
+                for i in range(1, onehot_count):
+                    onehot[np.arange(len(labels)), labels * onehot_count + i] = 1.0
             tfr.add_labels(onehot[order])
         else:
             tfr.add_labels(labels[order])
